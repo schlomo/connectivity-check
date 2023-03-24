@@ -1,0 +1,63 @@
+#     Copyright 2023 Forto Logistics AG & Co. KG.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+[tool.poetry]
+name = "connectivity-check"
+version = "0.1.4"
+description = "Network and Website Connectivity Checks with DataDog metrics reporting"
+authors = ["Schlomo Schapiro <schlomo.schapiro@forto.com>"]
+readme = "README.md"
+packages = [{include = "connectivity_check"}]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+fire = "^0.5.0"
+cryptography = "^39.0.1"
+requests-toolbelt = "^0.10.1"
+requests = "^2.28.2"
+scapy = "^2.5.0"
+tcp-latency = "^0.0.12"
+pyroute2 = "^0.7.6"
+pyyaml = "^6.0"
+speedtest-cli = "^2.1.3"
+datadog = "^0.45.0"
+cloudflarepycli = "^1.7.0"
+pip-system-certs = "^4.0"
+bs4 = "^0.0.1"
+wres = "^1.0.3"
+python-box = "^7.0.1"
+schema = "^0.7.5"
+
+[tool.poetry.scripts]
+connectivity-check = "connectivity_check.__main__:cli"
+
+[tool.poetry.group.dev.dependencies]
+ipython = "^8.10.0"
+autopep8 = "^2.0.1"
+pytest = "^7.2.1"
+freezegun = "^1.2.2"
+pytest-cov = "^4.0.0"
+pytest-mock = "^3.10.0"
+requests-mock = "^1.10.0"
+re-assert = "^1.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.pytest.ini_options]
+addopts = "--cov-report term-missing --cov-report xml:cov.xml --cov-report html --cov=connectivity_check"
+testpaths = [
+    "tests",
+]
