@@ -67,7 +67,6 @@ def platform_system(request, mock_platform_system):
 
 
 def test_route_init_ip(mock_gethostbyname, mock_routing, platform_system):
-
     route = Route(DESTINATION_IP)
     assert route.ip == DESTINATION_IP
     assert route.destination == DESTINATION_IP
