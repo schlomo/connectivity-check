@@ -31,13 +31,15 @@ def cli():
         MissingSchema,
         SSLError,
         TimeoutError,
-        FileNotFoundError
+        FileNotFoundError,
     ) as e:
         raise SystemExit("ERROR: " + str(e))
     except Exception as e:
         raise SystemExit(
-            f"BUG ERROR (unexpected {e.__class__} exception):\n" + "  \n".join(traceback.format_exception(e)))
+            f"BUG ERROR (unexpected {e.__class__} exception):\n"
+            + "  \n".join(traceback.format_exception(e))
+        )
 
 
 if __name__ == "__main__":
-    cli()
+    cli() # pragma: no cover

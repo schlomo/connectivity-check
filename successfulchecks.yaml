@@ -19,7 +19,7 @@ config:
 checks:
   - cert:
       target: google.com
-      issuer: cloudflare
+      issuer: Google
   - content:
       target: "https://google.com/drive"
       content: download

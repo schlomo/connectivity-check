@@ -24,7 +24,7 @@ packages = [{include = "connectivity_check"}]
 python = "^3.8"
 fire = "^0.5.0"
 cryptography = "^39.0.1"
-requests-toolbelt = "^0.10.1"
+requests-toolbelt = "^1"
 requests = "^2.28.2"
 scapy = "^2.5.0"
 tcp-latency = "^0.0.12"
@@ -57,7 +57,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
-addopts = "--cov-report term-missing --cov-report xml:cov.xml --cov-report html --cov=connectivity_check"
+addopts = "--cov-report term-missing --cov-report xml:cov.xml --cov-report html --cov=connectivity_check -W ignore -W default:::connectivity_check -W default:::tests --cov-fail-under=100 --cov-branch"
 testpaths = [
     "tests",
 ]

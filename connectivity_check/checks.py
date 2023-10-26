@@ -16,31 +16,32 @@ import yaml
 from schema import Schema, Optional, Or, SchemaError
 from .exceptions import ConnectivityCheckException
 
-config_schema = Schema({
-    Optional("config"): {
-        Optional("datadog", default=None): Or(str, None)
-    },
-    "checks": [
-        {
-            Or(
-                "cert",
-                "content",
-                "routing",
-                "latency",
-                "speed_ookla",
-                "speed_cloudflare",
-                error="Invalid check type"
-            ): dict
-        }
-    ]
-})
+config_schema = Schema(
+    {
+        Optional("config"): {Optional("datadog", default=None): Or(str, None)},
+        "checks": [
+            {
+                Or(
+                    "cert",
+                    "content",
+                    "routing",
+                    "latency",
+                    "speed_ookla",
+                    "speed_cloudflare",
+                    error="Invalid check type",
+                ): dict
+            }
+        ],
+    }
+)
+
 
 def checks(self, config: str, all: bool = False):
     """
     Run all checks in config file
 
     Run all checks defined in CONFIG file. Fail on first failed check unless ALL is set.
-    
+
     Config file format is YAML like this:
 
     config:
@@ -63,7 +64,7 @@ def checks(self, config: str, all: bool = False):
             target: Ookla-ID
             latency: 200
         - speed_cloudflare:
-            latency: 200     
+            latency: 200
 
     Entries can be repeated to different checks
     """
@@ -73,7 +74,12 @@ def checks(self, config: str, all: bool = False):
             yaml_data = yaml.safe_load(yaml_config_file)
         yaml_data = config_schema.validate(yaml_data)
     except SchemaError as se:
-        raise ConnectivityCheckException(f"Configuration file {config} has an error:\n" + str(se) + "\n" + self.checks.__doc__)
+        raise ConnectivityCheckException(
+            f"Configuration file {config} has an error:\n"
+            + str(se)
+            + "\n"
+            + self.checks.__doc__
+        )
     except Exception as e:
         raise ConnectivityCheckException(str(e))
 
@@ -93,7 +99,8 @@ def checks(self, config: str, all: bool = False):
                     result = getattr(self, function_name)(**kwargs)
                 except TypeError as e:
                     raise ConnectivityCheckException(
-                        f"Error in check parameters: {e}\nProblematic parameter block: {kwargs}\nUse {function_name} --help for details")
+                        f"Error in check parameters: {e}\nProblematic parameter block: {kwargs}\nUse {function_name} --help for details"
+                    )
                 print(result)
                 success.append((description, result))
                 status = "OK"

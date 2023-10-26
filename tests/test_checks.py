@@ -43,7 +43,7 @@ def test_checks_no_checks_defined(config_file):
 def test_checks_with_config(config_file):
     config_content = {
         "config": {"datadog": "foobar"},
-        "checks": [{"cert": {"key": "value"}}]
+        "checks": [{"cert": {"key": "value"}}],
     }
     config_file.write_text(yaml.safe_dump(config_content))
     c = ConnectivityChecks()
@@ -53,9 +53,7 @@ def test_checks_with_config(config_file):
 
 
 def test_checks_invalid_check(config_file):
-    config_content = {
-        "checks": [{"blubberlutsch": {}}]
-    }
+    config_content = {"checks": [{"blubberlutsch": {}}]}
     config_file.write_text(yaml.safe_dump(config_content))
     c = ConnectivityChecks()
     with pytest.raises(ConnectivityCheckException) as exc:
@@ -71,16 +69,19 @@ def test_checks_normal(config_file, mocker):
             {
                 "latency": {"key": "value"},
                 "content": {"key": "value", "foo": "bar"},
-                "cert": {"key": "value"}
-            }
+                "cert": {"key": "value"},
+            },
         ]
     }
-    mocks = Box(mocker.patch.multiple(ConnectivityChecks,
-                                      check_cert=mocker.DEFAULT,
-                                      check_routing=mocker.DEFAULT,
-                                      check_latency=mocker.DEFAULT,
-                                      check_content=mocker.DEFAULT
-                                      ))
+    mocks = Box(
+        mocker.patch.multiple(
+            ConnectivityChecks,
+            check_cert=mocker.DEFAULT,
+            check_routing=mocker.DEFAULT,
+            check_latency=mocker.DEFAULT,
+            check_content=mocker.DEFAULT,
+        )
+    )
     config_file.write_text(yaml.safe_dump(config_content))
     c = ConnectivityChecks()
     c.checks(config_file, all=True)
@@ -99,16 +100,19 @@ def test_checks_all_with_error(config_file, mocker):
             {
                 "latency": {"key": "value"},
                 "content": {"key": "value", "foo": "bar"},
-                "cert": {"key": "value"}
-            }
+                "cert": {"key": "value"},
+            },
         ]
     }
-    mocks = Box(mocker.patch.multiple(ConnectivityChecks,
-                                      check_cert=mocker.DEFAULT,
-                                      check_routing=mocker.DEFAULT,
-                                      check_latency=mocker.DEFAULT,
-                                      check_content=mocker.DEFAULT
-                                      ))
+    mocks = Box(
+        mocker.patch.multiple(
+            ConnectivityChecks,
+            check_cert=mocker.DEFAULT,
+            check_routing=mocker.DEFAULT,
+            check_latency=mocker.DEFAULT,
+            check_content=mocker.DEFAULT,
+        )
+    )
     mocks.check_latency.side_effect = ConnectivityCheckException
     config_file.write_text(yaml.safe_dump(config_content))
     c = ConnectivityChecks()
@@ -126,10 +130,9 @@ def test_checks_file_error(config_file):
     with pytest.raises(ConnectivityCheckException, match="blubberlutsch"):
         c.checks(f"{config_file}.blubberlutsch")
 
+
 def test_checks_other_error(config_file, mocker):
-    config_content = {
-        "checks": [{"cert": {"key": "value"}}]
-    }
+    config_content = {"checks": [{"cert": {"key": "value"}}]}
     config_file.write_text(yaml.safe_dump(config_content))
     cert_mock = mocker.patch.object(ConnectivityChecks, "check_cert")
     cert_mock.side_effect = Exception("foo error")

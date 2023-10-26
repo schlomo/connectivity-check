@@ -19,7 +19,10 @@ from requests_toolbelt.utils import dump
 
 from .exceptions import ConnectivityCheckException
 
-def check_content(self, target: str, content: str = None, ca: str = None, timeout=10) -> str:
+
+def check_content(
+    self, target: str, content: str = None, ca: str = None, timeout=10
+) -> str:
     """
     Check the content of remote location
 
@@ -32,19 +35,18 @@ def check_content(self, target: str, content: str = None, ca: str = None, timeou
     certificates directory to lookup certificates by hash.
     """
     response = requests.get(target, timeout=timeout, verify=ca if ca else True)
-    if response is not None:
-        request_dump = dump.dump_all(response).decode(response.encoding)
-        if content:
-            content = str(content)
-            check_result = re.search(
-                content, response.text, re.IGNORECASE) is not None
-            self._datadog(target=target, check="content", values=check_result)
-            if check_result:
-                return (f"Content from {target} matches »{content}«")
-            else:
-                raise ConnectivityCheckException(
-                    f"Content from {target} fails content match »{content}«\n\n"
-                    + response.text
-                )
+
+    request_dump = dump.dump_all(response).decode(response.encoding)
+    if content:
+        content = str(content)
+        check_result = re.search(content, response.text, re.IGNORECASE) is not None
+        self._datadog(target=target, check="content", values=check_result)
+        if check_result:
+            return f"Content from {target} matches »{content}«"
         else:
-            return (request_dump)
+            raise ConnectivityCheckException(
+                f"Content from {target} fails content match »{content}«\n\n"
+                + response.text
+            )
+    else:
+        return request_dump

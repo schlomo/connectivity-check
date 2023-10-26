@@ -77,7 +77,10 @@ def test_check_cert_expires_soon():
 
 @freeze_time(test_certificate_start_date)
 def test_check_cert_wrong_issuer():
-    with pytest.raises(ConnectivityCheckException, match="(?s)fails.*match.*no-example.*www.example.com"):
+    with pytest.raises(
+        ConnectivityCheckException,
+        match="(?s)fails.*match.*no-example.*www.example.com",
+    ):
         ConnectivityChecks().check_cert(
             target="www.example.com", issuer="no-example", validity=50
         )
@@ -86,7 +89,9 @@ def test_check_cert_wrong_issuer():
 @freeze_time(test_certificate_start_date + timedelta(days=50))
 def test_check_cert_already_expired():
     # travel 50 days in the future of certificate which was created with 10 days validity -> -40 days ago expired
-    with pytest.raises(ConnectivityCheckException, match="(?s)fails.*expires.*-40 days"):
+    with pytest.raises(
+        ConnectivityCheckException, match="(?s)fails.*expires.*-40 days"
+    ):
         ConnectivityChecks().check_cert(
             target="www.example.com", issuer="example", validity=50
         )

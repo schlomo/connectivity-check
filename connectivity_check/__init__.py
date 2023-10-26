@@ -15,6 +15,7 @@
 from __future__ import annotations
 from box import Box
 
+
 class ConnectivityChecks(object):
     """
     Run various network and HTTP connectivity checks

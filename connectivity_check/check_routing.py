@@ -26,7 +26,7 @@ class Route:
     "Determine and IPv4 route to a destination"
 
     def __init__(self, dest: str) -> Route:
-        if re.fullmatch('[\d.]+', dest):
+        if re.fullmatch("[\d.]+", dest):
             # got IP
             self.ip = dest
             self.destination = dest
@@ -36,18 +36,21 @@ class Route:
                 self.ip = gethostbyname(dest)
             except gaierror as e:
                 raise ConnectivityCheckException(
-                    f"Could not convert {dest} to IP address: {e}")
+                    f"Could not convert {dest} to IP address: {e}"
+                )
             self.destination = f"{dest} ({self.ip})"
 
         if platform.system() == "Linux":
             # Scapy doesn't support policy routing, see https://github.com/secdev/scapy/issues/836
             # we therefore use Linux-only pyroute2 here
             from pyroute2 import IPRoute
+
             ipr = IPRoute()
 
             route_attrs = dict(ipr.route("get", dst=self.ip)[0]["attrs"])
-            assert route_attrs[
-                "RTA_DST"] == self.ip, f"Route lookup destination mismatch {self.ip} != {route_attrs['RTA_DST']}"
+            assert (
+                route_attrs["RTA_DST"] == self.ip
+            ), f"Route lookup destination mismatch {self.ip} != {route_attrs['RTA_DST']}"
             self.local_ip = route_attrs["RTA_PREFSRC"]
             self.gateway_ip = route_attrs.get("RTA_GATEWAY", "direct")
             device_id = route_attrs["RTA_OIF"]
@@ -56,6 +59,7 @@ class Route:
             # use scapy on all non-Linux OS
             # lazy-load scapy as it does a lot upon initialisation and can also print warnings if not disabled via logging
             import logging
+
             logging.getLogger("scapy.runtime").setLevel(logging.ERROR)
             from scapy.all import conf as scapy_conf
 
@@ -68,7 +72,11 @@ class Route:
         return self == other if same else self != other
 
     def __eq__(self, other: Route) -> bool:
-        return self.device == other.device and self.local_ip == other.local_ip and self.gateway_ip == other.gateway_ip
+        return (
+            self.device == other.device
+            and self.local_ip == other.local_ip
+            and self.gateway_ip == other.gateway_ip
+        )
 
     def __ne__(self, other: Route) -> bool:
         return not self == other
@@ -97,8 +105,9 @@ def check_routing(self, target: str, reference: str, same: bool = False):
     reference_route = Route(reference)
 
     check_result = reference_route.compare(target_route, same)
-    self._datadog(target=target, check="routing",
-                  values=check_result, device=target_route.device)
+    self._datadog(
+        target=target, check="routing", values=check_result, device=target_route.device
+    )
     if check_result:
         return f"Routing to {target} via {target_route.gateway_ip}/{target_route.device} {'is same as' if same else 'differs from'} route to {reference}"
     else:

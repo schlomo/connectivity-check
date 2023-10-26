@@ -17,7 +17,9 @@ from cloudflarepycli import cloudflareclass
 from .exceptions import ConnectivityCheckException
 
 
-def check_speed_cloudflare(self, latency: int = 50, download: int = 20, upload: int = 5, progress: bool = False):
+def check_speed_cloudflare(
+    self, latency: int = 50, download: int = 20, upload: int = 5, progress: bool = False
+):
     """
     Check the network speed via Cloudflare speed.cloudflare.com
 
@@ -28,21 +30,33 @@ def check_speed_cloudflare(self, latency: int = 50, download: int = 20, upload: 
         results = cloudflareclass.cloudflare(printit=progress).runalltests()
     except Exception as e:
         raise ConnectivityCheckException(str(e))
-    
+
     # import json, pathlib ; pathlib.Path("./out.json").write_text(json.dumps(results, indent=2))
 
     results = {key: compound["value"] for key, compound in results.items()}
-    result_download = results['90th_percentile_download_speed']
-    result_upload = results['90th_percentile_upload_speed']
-    result_latency = results['latency_ms']
-    result_server_description = "speed.cloudflare.com in {test_location_city} ({test_location_region})".format(
-        **results)
-    check_result = result_download >= download and result_upload >= upload and result_latency <= latency
-    self._datadog(target="speed.cloudflare.com", check="speed_cloudflare",
-                  values={"download": result_download,
-                          "upload": result_upload,
-                          "latency": result_latency},
-                  host=result_server_description)
+    result_download = results["90th_percentile_download_speed"]
+    result_upload = results["90th_percentile_upload_speed"]
+    result_latency = results["latency_ms"]
+    result_server_description = (
+        "speed.cloudflare.com in {test_location_city} ({test_location_region})".format(
+            **results
+        )
+    )
+    check_result = (
+        result_download >= download
+        and result_upload >= upload
+        and result_latency <= latency
+    )
+    self._datadog(
+        target="speed.cloudflare.com",
+        check="speed_cloudflare",
+        values={
+            "download": result_download,
+            "upload": result_upload,
+            "latency": result_latency,
+        },
+        host=result_server_description,
+    )
     if check_result:
         return f"Speedtest to {result_server_description} D:{result_download} U:{result_upload} Mb/s at {result_latency} ms"
     else:

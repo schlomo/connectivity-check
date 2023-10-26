@@ -18,6 +18,7 @@ import pytest
 
 from connectivity_check import ConnectivityChecks
 
+
 @pytest.fixture
 def mock_gauge(mocker):
     return mocker.patch("datadog.statsd.gauge")
@@ -28,28 +29,33 @@ def mock_gauge(mocker):
 def mock_initialize(mocker):
     return mocker.patch("datadog.initialize")
 
+
 def test_datadog_int(mock_gauge, mock_initialize):
     c = ConnectivityChecks(datadog="prefix")
     c._datadog("target", "check", 42, foo="bar", blubber="lutsch")
     mock_gauge.assert_called_once_with(
-        "prefix.check", 42, ["target:target", "foo:bar", "blubber:lutsch"])
+        "prefix.check", 42, ["target:target", "foo:bar", "blubber:lutsch"]
+    )
+
 
 def test_datadog_bool(mock_gauge, mock_initialize):
     c = ConnectivityChecks(datadog="prefix")
     c._datadog("target", "check", True, foo="bar", blubber="lutsch")
     mock_gauge.assert_called_once_with(
-        "prefix.check", 1, ["target:target", "foo:bar", "blubber:lutsch"])
+        "prefix.check", 1, ["target:target", "foo:bar", "blubber:lutsch"]
+    )
+
 
 def test_datadog_dict(mock_gauge, mock_initialize):
     c = ConnectivityChecks(datadog="prefix")
-    c._datadog("target", "check", {
-        "one": 1, "two": 2}, foo="bar", blubber="lutsch")
-    mock_gauge.assert_has_calls([
-        call("prefix.check.one", 1, [
-            "target:target", "foo:bar", "blubber:lutsch"]),
-        call("prefix.check.two", 2, [
-            "target:target", "foo:bar", "blubber:lutsch"])
-    ])
+    c._datadog("target", "check", {"one": 1, "two": 2}, foo="bar", blubber="lutsch")
+    mock_gauge.assert_has_calls(
+        [
+            call("prefix.check.one", 1, ["target:target", "foo:bar", "blubber:lutsch"]),
+            call("prefix.check.two", 2, ["target:target", "foo:bar", "blubber:lutsch"]),
+        ]
+    )
+
 
 def test_datadog_disabled(mock_gauge, mock_initialize):
     c = ConnectivityChecks()

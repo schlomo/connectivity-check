@@ -22,6 +22,7 @@ from urllib.parse import urlparse
 
 from .exceptions import ConnectivityCheckException
 
+
 class CertDetails:
     def __init__(self, cert: x509.Certificate) -> None:
         self.issuer = cert.issuer.rfc4514_string()
@@ -79,19 +80,18 @@ def check_cert(self, target: str, issuer: str = None, validity: int = 5, timeout
     cert_details = CertDetails(cert)
     if issuer:
         issuer = str(issuer)
-        check_result_issuer = re.search(
-            issuer, cert_details.issuer, re.IGNORECASE) is not None
+        check_result_issuer = (
+            re.search(issuer, cert_details.issuer, re.IGNORECASE) is not None
+        )
         check_result_validity = cert_details.validity >= validity
         check_result = check_result_issuer and check_result_validity
         self._datadog(target=host, check="cert", values=check_result)
         if check_result:
-            return (
-                f"Certificate from {host} matches issuer »{issuer}« ({cert_details.issuer}) and expiration in more than {validity} ({cert_details.validity}) days"
-            )
+            return f"Certificate from {host} matches issuer »{issuer}« ({cert_details.issuer}) and expiration in more than {validity} ({cert_details.validity}) days"
         else:
             raise ConnectivityCheckException(
                 f"Certificate from {host} fails issuer match »{issuer}« or expires before {validity} days\n"
                 + str(cert_details)
             )
     else:
-        return (f"Fetched X.509 certificate from {host}:{port}\n" + str(cert_details))
+        return f"Fetched X.509 certificate from {host}:{port}\n" + str(cert_details)

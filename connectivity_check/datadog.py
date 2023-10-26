@@ -18,10 +18,8 @@ from typing import Union
 
 __initialized = False
 
-DD_OPTIONS = {
-    'statsd_host': '127.0.0.1',
-    'statsd_port': 8125
-}
+DD_OPTIONS = {"statsd_host": "127.0.0.1", "statsd_port": 8125}
+
 
 def submit_datadog(metric: str, value, tags: list):
     global __initialized
@@ -32,15 +30,17 @@ def submit_datadog(metric: str, value, tags: list):
     print(f"DD: {metric} = {value} / {tags}")
 
 
-def _datadog(self, target: str, check: str, values: Union[bool, int, str, dict], *args, **kwargs):
+def _datadog(
+    self, target: str, check: str, values: Union[bool, int, str, dict], *args, **kwargs
+):
     if "datadog" in self._config and self._config.datadog:
-        tags = [f"target:{target}"] + \
-            [f"{key}:{value}" for key, value in kwargs.items()]
+        tags = [f"target:{target}"] + [
+            f"{key}:{value}" for key, value in kwargs.items()
+        ]
         metric_name = f"{self._config.datadog}.{check}"
         if type(values) is dict:
             for key, value in values.items():
-                submit_datadog(
-                    f"{metric_name}.{key}", value, tags)
+                submit_datadog(f"{metric_name}.{key}", value, tags)
         else:
             if type(values) is bool:
                 # convert to 1 for True and 0 for False

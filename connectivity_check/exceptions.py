@@ -15,5 +15,6 @@
 from requests.exceptions import SSLError, MissingSchema
 from ssl import SSLCertVerificationError
 
+
 class ConnectivityCheckException(Exception):
     pass

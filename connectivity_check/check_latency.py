@@ -18,7 +18,15 @@ import tcp_latency
 from urllib.parse import urlparse
 
 
-def check_latency(self, target: str, latency: int, timeout: float = 5, runs: int = 3, wait: float = 1, verbose: bool = False) -> str:
+def check_latency(
+    self,
+    target: str,
+    latency: int,
+    timeout: float = 5,
+    runs: int = 3,
+    wait: float = 1,
+    verbose: bool = False,
+) -> str:
     """
     Check latency based on TCP connections
 
@@ -40,8 +48,7 @@ def check_latency(self, target: str, latency: int, timeout: float = 5, runs: int
 
     display_dest = f"{host}:{port}"
 
-    measures = tcp_latency.measure_latency(
-        host, port, timeout, runs, wait, verbose)
+    measures = tcp_latency.measure_latency(host, port, timeout, runs, wait, verbose)
 
     if len(measures) > 0:
         average = int(tcp_latency.mean(measures))
@@ -49,15 +56,16 @@ def check_latency(self, target: str, latency: int, timeout: float = 5, runs: int
         maximum = int(max(measures))
 
         check_result = average <= latency
-        self._datadog(target=target, check="latency",
-                      values={"average": average,
-                              "minimum": minimum,
-                              "maximum": maximum})
+        self._datadog(
+            target=target,
+            check="latency",
+            values={"average": average, "minimum": minimum, "maximum": maximum},
+        )
         if check_result:
             return f"TCP connection latency to {display_dest} is {average} (limit {latency})"
         else:
             raise ConnectivityCheckException(
-                f"TCP connection latency to {display_dest} is {average} exceeding the limit of {latency}")
+                f"TCP connection latency to {display_dest} is {average} exceeding the limit of {latency}"
+            )
     else:
-        raise ConnectivityCheckException(
-            f"TCP connection to {display_dest} failed")
+        raise ConnectivityCheckException(f"TCP connection to {display_dest} failed")
