@@ -14,7 +14,7 @@
 
 [tool.poetry]
 name = "connectivity-check"
-version = "0.1.4"
+version = "0.0.0"
 description = "Network and Website Connectivity Checks with DataDog metrics reporting"
 authors = ["Schlomo Schapiro <schlomo.schapiro@forto.com>"]
 readme = "README.md"
