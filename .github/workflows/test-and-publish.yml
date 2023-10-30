@@ -49,11 +49,10 @@ jobs:
 
       - name: pypi-publish
         uses: pypa/gh-action-pypi-publish@v1.8.10
-        with:
-          repository-url: https://test.pypi.org/legacy/
+#        with: { repository-url: https://test.pypi.org/legacy/ }
       
       - name: Upload release as artifact
         uses: actions/upload-artifact@v3
         with:
           name: wheel
-          path: dist/*.whl
+          path: dist/*

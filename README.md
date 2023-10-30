@@ -6,9 +6,17 @@ This tool has been written to validate the network routing configuration,
 especially in the context of a split tunnel VPN connection and to help validate
 network policies.
 
-Currently implements the following features:
+## Installation
+
+Install from [PyPI](https://pypi.org/project/connectivity-check):
+
+```text
+pip install connectivity-check
+```
 
 ## Features
+
+Currently implements the following features:
 
 ### Split Tunnel Routing
 
