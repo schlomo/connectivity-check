@@ -53,7 +53,7 @@ jobs:
           repository-url: https://test.pypi.org/legacy/
       
       - name: Upload release as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: wheel
           path: dist/*.whl
