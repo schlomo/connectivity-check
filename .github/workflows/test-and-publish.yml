@@ -14,6 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      id-token: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -44,7 +45,12 @@ jobs:
         shell: bash
         run: |
           set -e -x -o pipefail
-          poetry build --format wheel
+          poetry build
+
+      - name: pypi-publish
+        uses: pypa/gh-action-pypi-publish@v1.8.10
+        with:
+          repository-url: https://test.pypi.org/legacy/
       
       - name: Upload release as artifact
         uses: actions/upload-artifact@v2

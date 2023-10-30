@@ -16,7 +16,7 @@
 name = "connectivity-check"
 version = "0.0.0"
 description = "Network and Website Connectivity Checks with DataDog metrics reporting"
-authors = ["Schlomo Schapiro <schlomo.schapiro@forto.com>"]
+authors = ["Schlomo Schapiro <schlomo+connectivity-check@schapiro.org>"]
 readme = "README.md"
 packages = [{include = "connectivity_check"}]
 
